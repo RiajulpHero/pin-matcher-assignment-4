@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input id="random-input" class="text-center" class="form-control" type="text">
+                    <button id="random-generator-btn" class="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input id="match-input"  class="form-control" type="text">
+                    <div class="numbers">
+                        <div class="calc-body">
+                            <div class="calc-button-row">
+                                <div class="button" value="7">7</div>
+                                <div class="button" value="8">8</div>
+                                <div class="button" value="9">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button" value="4">4</div>
+                                <div class="button" value="5">5</div>
+                                <div class="button" value="6">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button" value="1">1</div>
+                                <div class="button" value="2">2</div>
+                                <div class="button" value="3">3</div>
+                            </div>
+                            <div id="delete" class="calc-button-row">
+                                <div id="delete-single" value="<"> <</div>
+                                <div class="button" value="0">0</div>
+                                <div id="clear" class="button" value="c">C</div>
+                            </div>
+                            <div>
+                                <button id="submit" type="submit" class="submit-btn">Submit</button>
+                                <p class="action-left"><span id='chances-left' value="0">3</span> try left</p>
+                                <!-- <p class="action-left">3 try left</p> -->
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="notify-section">
+            <p id="notify-mismatch" class="notify">❌ Pin Didn't Match, Please try again</p>
+            <p id="notify-match" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+        </div>
+    </div>
+    
+    <script> 
+
+let matchNumber;
+let matchCal;
+document.getElementById('random-generator-btn').addEventListener('click', function() {
+    let numberRandom = Math.floor(1000 + Math.random() * 9000);
+    matchNumber = numberRandom;
+    document.getElementById('random-input').value = matchNumber;
+matchPin();
+})
+
+//Pin display value
+function pinNumber() {
+    var numberBtn = document.getElementsByClassName('button');
+    for (let i = 0; i < numberBtn.length; i++) {
+        numberBtn[i].addEventListener('click', function() {
+            let matchNum = document.getElementById('match-input');
+            matchCal = matchNum;
+            matchCal.value = matchCal.value + this.innerText;
+            matchPin();
+        })
+    }
+}
+
+pinNumber();
+
+// pin match checker
+function matchPin() {
+    document.getElementById('submit').addEventListener('click', function() {
+          if (matchCal.value == matchNumber) {
+            const matchNotification = document.getElementById('notify-match');
+            matchNotification.style.display = "block";
+           const mismatchNotification = document.getElementById('notify-mismatch');
+            mismatchNotification.style.display = "none";
+       }
+        if (matchCal.value != matchNumber) {
+            const mismatchNotification = document.getElementById('notify-mismatch');
+            mismatchNotification.style.display = "block";
+            const matchNotification = document.getElementById('notify-match');
+            matchNotification.style.display = "none";
+            chancesLeft();
+
+        }
+    })
+}
+
+//All clear display number
+document.getElementById('clear').addEventListener('click', function() {
+    matchCal.value = null;
+})
+// Delete single digit
+document.getElementById('delete-single').addEventListener('click', function() {
+    matchCal.value = matchCal.value.substring(0, matchCal.value.length - 1);
+})
+
+//Chances left and disabled submit
+var count = 0;
+function chancesLeft() {
+    count += 1;
+    var chancesLeft = document.getElementById('chances-left');
+    var click = document.getElementById('submit');
+        click = count;
+        chancesLeft = count;
+    var btn = document.getElementById('submit');
+
+    if (click >= 15) {
+      btn.disabled = true;
+        btn.style.backgroundColor = 'red';
+        document.getElementById('submit').innerText="Try after 24 hrs!"
+    } else if (click >= 3) {
+        document.getElementById('chances-left').innerHTML = 2;
+     }
+    if (click >= 6) {
+        document.getElementById('chances-left').innerHTML = 1;
+    }
+    if (click >= 12) {
+        document.getElementById('chances-left').innerHTML = 0;
+       }
+}
+     
+    </script> 
+
+</body>
+</html>
